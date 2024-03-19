@@ -145,12 +145,13 @@
         {#each grid as card, cardIndex}
             {@const isSelected = selected.includes(cardIndex)}
             {@const isSelectedOrMatch = selected.includes(cardIndex) || matches.includes(card)}
+            {@const disabled = selected.includes(cardIndex) || matches.includes(card) || selected.length === 2}
             {@const match = matches.includes(card)}
             <button 
                 class="card" 
                 class:selected={isSelected} 
                 class:flip={isSelectedOrMatch}
-                disabled={isSelectedOrMatch} 
+                disabled={disabled} 
                 on:click={() => selectCard(cardIndex)}
             >
                 <div class:match class="back">{card}</div>
