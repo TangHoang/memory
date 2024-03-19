@@ -16,7 +16,6 @@
     let grid = createGrid();
     let chosenQuestions = chooseQuestions();
 
-    let value = null;
     let submittedAnswer = null;
     let booleanArray = [] // used to keep track of correct or false answers
 
@@ -99,17 +98,20 @@
     }
 
     function playMemory() {
-        chosenQuestions = chooseQuestions();
-        booleanArray = [];
-        state = State.playingMemory;
+        setTimeout(() => {
+            state = State.playingMemory;
+            booleanArray = [];
+            chosenQuestions = chooseQuestions();
+        } , 1000);
+
     }
 
     function handleInput(id, correctAnswer) {
-        let answer = document.getElementById(`${id}`);
-        if (answer.value == correctAnswer) {
+        let input = document.getElementById(`${id}`);
+        if (input.value == correctAnswer) {
             booleanArray[id] = true;
         }
-        return answer.value;
+        return input.value;
     }
 
     $: if (state === State.playingMemory) {
@@ -171,12 +173,13 @@
     <h1 class="timer" class:pulse={time < 6}> {time}</h1>
     <div class="questions">
         {#each chosenQuestions as question, questionId}
-            <form on:submit|preventDefault={() => { submittedAnswer = handleInput(questionId, question.answer)}} class="question-block">
-                <div class="question"> {question.question}</div>
-                <input class="answer" id="{questionId}" type="numeric">
-                {#if booleanArray[questionId] == true}
-                    <p>Correct</p>
-                {/if}
+            <form on:submit|preventDefault={() => { 
+                submittedAnswer = handleInput(questionId, question.answer)}} 
+                class="question-block" 
+                class:correct-answer = {booleanArray[questionId]}
+            >
+                    <div class="question"> {question.question}</div>
+                    <input class="answer" id="{questionId}" type="numeric" autocomplete="off">
             </form>
         {/each}
     </div>
@@ -192,34 +195,34 @@
     .question {
         height: 150px;
         width: 500px;
-        background: var(--bg-2);
         display: grid;
         align-items: center;
         padding-left: 30px;
         padding-right: 30px;
-        border-radius: 5px;
     }
 
     .answer {
         font-size: 4.5rem;
-        max-width: 20%;
+        max-width: 200px;
         text-align: center;
-        border: none;
-        border-radius: 5px;
         background-color: whitesmoke;
+        border: none;
+    }
+
+    .correct-answer {
+        border: 3px solid green;
     }
 
     .question-block {
         display: flex;
         flex-direction: row;
-        justify-content: center;
-        width: 800px;
-        width: fit-content;
+        background: var(--bg-2);
+        overflow: hidden;
+        width: auto;
         font-size: 4.5rem;
         margin-top: 10px;
         margin-bottom: 10px;
-        border-radius: 8px;
-
+        border-radius: 15px;
     }
 
     .card {
