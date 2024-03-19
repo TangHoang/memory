@@ -91,6 +91,7 @@
         matches = [];
         timerId = null;
         time = 120;
+        elapsedTime = 0;
     }
 
     function playMath() {
@@ -123,7 +124,7 @@
     $: time === 0 && gameLost();
     $: booleanArray.length === 3 && playMemory();
 
-    $: elapsedTime % 30 === 2 && playMath()
+    $: elapsedTime % 30 === 29 && playMath()
 
     $: console.log(state, selected, matches);
 
