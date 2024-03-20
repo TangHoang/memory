@@ -12,7 +12,7 @@
     }
 
     let state = State.start;
-    let size = 20;
+    let size = 36;
     let grid = createGrid();
     let chosenQuestions = chooseQuestions();
 
@@ -24,7 +24,7 @@
     let matches = [];
     let timerId = null;
     let time = 120;
-    let elapsedTime = 0;
+    let memoryTime = 0;
 
     function chooseQuestions() {
         let temp = []; 
@@ -37,7 +37,11 @@
     function startGameTimer() {
         function countdown() {
             state !== State.paused && (time -= 1)
-            elapsedTime += 1;
+            if (state === State.playingMath) {
+                memoryTime += 0; // stop time, when playing math
+            } else {
+                memoryTime += 1; // increase when playing memory
+            }
         }
 
         timerId = setInterval(countdown, 1000);
@@ -91,7 +95,7 @@
         matches = [];
         timerId = null;
         time = 120;
-        elapsedTime = 0;
+        memoryTime = 0;
     }
 
     function playMath() {
@@ -124,7 +128,7 @@
     $: time === 0 && gameLost();
     $: booleanArray.length === 3 && playMemory();
 
-    $: elapsedTime % 30 === 29 && playMath()
+    $: memoryTime % 30 === 29 && playMath()
 
     $: console.log(state, selected, matches);
 
@@ -137,11 +141,6 @@
 
 {#if state === State.playingMemory}
     <h1 class="timer" class:pulse={time < 6}> {time}</h1>
-    <div class="matches">
-        {#each matches as card}
-            <div>{card}</div>
-        {/each}
-    </div>
     <div class="cards" >
         {#each grid as card, cardIndex}
             {@const isSelected = selected.includes(cardIndex)}
@@ -188,10 +187,18 @@
 {/if}
 
 <style>
+
+    h1 {
+        margin-top: 50px
+    }
     .cards {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 0.5rem
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(6, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 50px;
+        height: 80vh;
+        width: 80vh;
     }
 
     .question {
@@ -228,9 +235,9 @@
     }
 
     .card {
-        height: 150px;
-        width: 150px;
-        font-size: 4.5rem;
+        height: auto;
+        width: auto;
+        font-size: 4rem;
         background-color: var(--bg-2);
         transition: rotate 0.3s ease-out;
         transform-style: preserve-3d;
@@ -256,12 +263,6 @@
             transition: opacity 0.2s ease-out;
             opacity: 0.4;
         }
-    }
-    .matches {
-        display: flex;
-        gap: 1rem;
-        margin-block: 2rem;
-        font-size: 3rem;
     }
     
     .timer {
