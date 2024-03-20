@@ -1,6 +1,7 @@
 <script>
     import { emoji } from "./emoji.js"
     import { questions} from "./mathQuestions.js"
+    import ProgressBar from "./ProgressBar.svelte";
 
     const State = {
         start: "start",
@@ -15,6 +16,7 @@
     let size = 36;
     let grid = createGrid();
     let chosenQuestions = chooseQuestions();
+    let progress = 0;
 
     let submittedAnswer = null;
     let booleanArray = [] // used to keep track of correct or false answers
@@ -73,6 +75,7 @@
 
         if( grid[first] === grid[second]) {
             matches = matches.concat(grid[first]);
+            progress += 20;
         }
         setTimeout(()=> selected = [], 800);
     }
@@ -141,6 +144,7 @@
 
 {#if state === State.playingMemory}
     <h1 class="timer" class:pulse={time < 6}> {time}</h1>
+    <ProgressBar value={progress}/>
     <div class="cards" >
         {#each grid as card, cardIndex}
             {@const isSelected = selected.includes(cardIndex)}
@@ -148,7 +152,7 @@
             {@const disabled = selected.includes(cardIndex) || matches.includes(card) || selected.length === 2}
             {@const match = matches.includes(card)}
             <button 
-                class="card" 
+                class="card shadow" 
                 class:selected={isSelected} 
                 class:flip={isSelectedOrMatch}
                 disabled={disabled} 
@@ -172,11 +176,12 @@
 
 {#if state === State.playingMath}
     <h1 class="timer" class:pulse={time < 6}> {time}</h1>
+    <ProgressBar value={33} class="shadow"/>
     <div class="questions">
         {#each chosenQuestions as question, questionId}
             <form on:submit|preventDefault={() => { 
                 submittedAnswer = handleInput(questionId, question.answer)}} 
-                class="question-block" 
+                class="question-block shadow" 
                 class:correct-answer = {booleanArray[questionId]}
             >
                     <div class="question"> {question.question}</div>
@@ -196,13 +201,13 @@
         grid-template-columns: repeat(6, 1fr);
         grid-template-rows: repeat(6, 1fr);
         gap: 0.5rem;
-        margin-bottom: 50px;
+        margin-bottom: 80px;
         height: 80vh;
         width: 80vh;
     }
 
     .question {
-        height: 150px;
+        height: 130px;
         width: 500px;
         display: grid;
         align-items: center;
@@ -214,7 +219,7 @@
         font-size: 4.5rem;
         max-width: 200px;
         text-align: center;
-        background-color: whitesmoke;
+        background-color: f0f0f0;
         border: none;
     }
 
@@ -228,9 +233,9 @@
         background: var(--bg-2);
         overflow: hidden;
         width: auto;
-        font-size: 4.5rem;
-        margin-top: 10px;
-        margin-bottom: 10px;
+        font-size: 3.5rem;
+        margin-top: 20px;
+        margin-bottom: 20px;
         border-radius: 15px;
     }
 
@@ -272,6 +277,10 @@
     .pulse {
         color: var(--pulse);
         animation: pulse 1s infinite ease;
+    }
+
+    .shadow {
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }
 
     @keyframes pulse {
