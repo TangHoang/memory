@@ -1,6 +1,7 @@
 <script>
-    import { emoji } from "./emoji.js"
-    import { questions} from "./mathQuestions.js"
+    import { emoji } from "../data/emoji.js"
+    import { questions} from "../data/mathQuestions.js"
+    import Header from "../components/Header.svelte"
 
     const State = {
         start: "start",
@@ -15,7 +16,7 @@
     let size = 36;
     let grid = createGrid();
     let chosenQuestions = chooseQuestions();
-    let progress = 0;
+    let points = 0;
 
     let submittedAnswer = null;
     let booleanArray = [] // used to keep track of correct or false answers
@@ -74,7 +75,7 @@
 
         if( grid[first] === grid[second]) {
             matches = matches.concat(grid[first]);
-            progress += 20;
+            points += 50;
         }
         setTimeout(()=> selected = [], 800);
     }
@@ -117,6 +118,7 @@
         let input = document.getElementById(`${id}`);
         if (input.value == correctAnswer) {
             booleanArray[id] = true;
+            points += 20;
         }
         return input.value;
     }
@@ -142,7 +144,8 @@
 {/if}
 
 {#if state === State.playingMemory}
-    <h1 class="timer" class:pulse={time < 6}> {time}</h1>
+    <Header {points} {time}> </Header>
+    
     <div class="cards" >
         {#each grid as card, cardIndex}
             {@const isSelected = selected.includes(cardIndex)}
@@ -173,8 +176,7 @@
 {/if}
 
 {#if state === State.playingMath}
-    <h1 class="timer" class:pulse={time < 6}> {time}</h1>
-    <ProgressBar value={33} class="shadow"/>
+    <Header {points} {time}> </Header>
     <div class="questions">
         {#each chosenQuestions as question, questionId}
             <form on:submit|preventDefault={() => { 
@@ -191,9 +193,7 @@
 
 <style>
 
-    h1 {
-        margin-top: 50px
-    }
+    
     .cards {
         display: grid;
         grid-template-columns: repeat(6, 1fr);
@@ -268,24 +268,13 @@
         }
     }
     
-    .timer {
-        transition: color 0.3s ease;
-    }
-
-    .pulse {
-        color: var(--pulse);
-        animation: pulse 1s infinite ease;
-    }
+    
 
     .shadow {
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }
 
-    @keyframes pulse {
-        to {
-            scale: 1.3;
-        }
-    }
+    
 
 </style>
 
