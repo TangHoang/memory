@@ -1,7 +1,6 @@
 <script>
     import { emoji } from "./emoji.js"
     import { questions} from "./mathQuestions.js"
-    import ProgressBar from "./ProgressBar.svelte";
 
     const State = {
         start: "start",
@@ -144,7 +143,6 @@
 
 {#if state === State.playingMemory}
     <h1 class="timer" class:pulse={time < 6}> {time}</h1>
-    <ProgressBar value={progress}/>
     <div class="cards" >
         {#each grid as card, cardIndex}
             {@const isSelected = selected.includes(cardIndex)}
