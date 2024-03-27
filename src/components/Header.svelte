@@ -11,6 +11,8 @@
         let seconds = num % 60;
         if (seconds == 0) {
             return "0" + minutes + ":" + seconds + "0";  
+        } else if (seconds < 10) {
+            return "0" + minutes + ":0" + seconds;
         }
         return "0" + minutes + ":" + seconds;         
     }
