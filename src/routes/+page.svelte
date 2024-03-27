@@ -82,6 +82,7 @@
         timerId = null;
         time = 120;
         memoryTime = 0;
+        points = 0;
     }
 
     function playMath() {
