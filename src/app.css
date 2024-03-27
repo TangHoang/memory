@@ -28,7 +28,8 @@ body {
     padding: 2rem;
     font-family: "Arial", sans-serif;
     color: var(--txt-1);
-    background-color: var(--bg-1);
+    background: rgb(3,2,25);
+    background: linear-gradient(90deg, rgba(3,2,25,1) 0%, rgba(2,2,31,1) 50%, rgba(1,17,40,1) 100%);
 }
 
 h1 {
