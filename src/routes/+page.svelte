@@ -49,18 +49,11 @@
     }
 
     function createGrid() {
-        let cards = [];
-        let maxSize = size / 2;
-        
-        while (cards.length < maxSize) {
-            const randomIndex = Math.floor(Math.random() * emoji.length)
-			cards.push(emoji[randomIndex])
-        }
-        return shuffle([...cards, ...cards]);
+        return emoji.sort(() => Math.random() - 0.5).slice(0, Math.min(emoji.length, size));
     }
 
     function shuffle(array) {
-        return array.sort(() => Math.random() - 0.5);
+        
     }
 
     function gameWon() {
