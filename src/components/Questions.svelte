@@ -10,10 +10,11 @@
             submittedAnswer = handleInput(questionId, question.answer)}} 
             class="question-block shadow" 
             class:correct-answer = {booleanArray[questionId]}
-        >
-                <div class="question"> {question.question}</div>
+        >   
+            <div class="question"> {question.question}</div>
                 <input class="answer" id="{questionId}" type="numeric" autocomplete="off">
         </form>
+        
     {/each}
 </div>
 
@@ -54,4 +55,5 @@
     .shadow {
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     }
+
 </style>

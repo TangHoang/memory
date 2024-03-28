@@ -50,7 +50,7 @@
     .card {
         height: auto;
         width: auto;
-        font-size: 4rem;
+        font-size: 3rem;
         background-color: var(--bg-2);
         transition: rotate 0.3s ease-out;
         transform-style: preserve-3d;

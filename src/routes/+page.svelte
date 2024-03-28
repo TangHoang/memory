@@ -4,6 +4,7 @@
     import Header from "../components/Header.svelte"
     import Cards from "../components/Cards.svelte";
     import Questions from "../components/Questions.svelte";
+  import anime from "animejs";
 
     const State = {
         start: "start",
@@ -12,21 +13,32 @@
         paused: "paused",
         won: "won",
         lost: "lost",
+        leaderboard: "leaderboard",
+        settings: "settings",
     }
 
+    let booleanSelection = {
+        smileys: false,
+        fruits_vegetables: false,
+        sports: false,
+        animals: false,
+    }
+
+    let grid;
+    let selection = "smileys";
     let state = State.start;
     let size = 36;
-    let grid = createGrid();
     let chosenQuestions = chooseQuestions();
     let points = 0;
     let submittedAnswer = null;
     let booleanArray = [] // used to keep track of correct or false answers
-    let maxMatches = grid.length / 2;
+    let maxMatches;
     let selected = [];
     let matches = [];
     let timerId = null;
     let time = 120;
     let memoryTime = 0;
+    let isClicked = false;
 
     function chooseQuestions() {
         let temp = []; 
@@ -49,7 +61,9 @@
     }
 
     function createGrid() {
-        return emoji.sort(() => Math.random() - 0.5).slice(0, Math.min(emoji.length, size));
+        // !!! grid layout anpassen an array größe !!! //
+        return emoji[selection].sort(
+            () => Math.random() - 0.5).slice(0, Math.min(Math.floor(emoji[selection].length / 2) * 2, size)); // making sure that the array length is even
     }
 
     function shuffle(array) {
@@ -76,6 +90,7 @@
         time = 120;
         memoryTime = 0;
         points = 0;
+        booleanSelection.animals = booleanSelection.food = booleanSelection.smileys = booleanSelection.sports = false;
     }
 
     function playMath() {
@@ -109,6 +124,19 @@
         return input.value;
     }
 
+    function handleSelection(selected) {
+        selection = selected;
+        grid = createGrid();
+        maxMatches = grid.length / 2; // defined here because grid needs to be created first
+        booleanSelection = {
+            smileys: false,
+            fruits_vegetables: false,
+            sports: false,
+            animals: false,
+        };
+        booleanSelection[selected] = true;
+    }
+
     $: maxMatches === matches.length && gameWon();
     $: time === 0 && gameLost();
     $: booleanArray.length === 3 && playMemory();
@@ -120,8 +148,19 @@
 </script>
 
 {#if state === State.start}
-    <h1>Memory</h1>
-    <button on:click={() => state = State.playingMemory}>Play</button>
+    <h1>Speedolino</h1>
+    <button class="click-button" on:click={() => state = State.settings}>Neues Spiel</button>
+    <button class="click-button" on:click={() => state = State.leaderboard}>Rangliste</button>
+{/if}
+
+{#if state === State.settings}
+    <div class="settings-container">
+        <button on:click={() => handleSelection("smileys")} class:highlight={booleanSelection.smileys} class="deck-button">Smileys</button>
+        <button on:click={() => handleSelection("animals")}  class:highlight={booleanSelection.animals} class="deck-button">Tiere</button>
+        <button on:click={() => handleSelection("fruits_vegetables")} class:highlight={booleanSelection.fruits_vegetables} class="deck-button">Essen</button>
+        <button on:click={() => handleSelection("sports")} class:highlight={booleanSelection.sports} class="deck-button">Sport</button>
+        <button class="click-button play-button" on:click={() => state = State.playingMemory}>Spielen</button>
+    </div>
 {/if}
 
 {#if state === State.playingMemory}
@@ -136,14 +175,57 @@
 
 {#if state === State.lost}
     <h1>Verloren!</h1>
-    <button on:click={() => state = State.playingMemory}>Play Again</button>
+    <button on:click={() => state = State.start}>Play Again</button>
 {/if}
 
 {#if state === State.won}
     <h1>Gewonnen!</h1>
-    <button on:click={() => state = State.playingMemory}>Play Again</button>
+    <button on:click={() => state = State.start}>Play Again</button>
 {/if}
 
 <style>
+
+    .settings-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 20px;
+        place-content: center;
+    }
+
+    .play-button {
+        grid-column: 2 / span 2;
+        grid-row: 2/2;
+    }
+
+    .deck-button {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: inherit;
+        background: none;
+        border-radius: 8px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .deck-button:hover {
+        color: var(--border);
+    }
+
+    .highlight {
+        color: var(--border);
+        animation: scale 0.2s ease forwards;
+    }
+
+    @keyframes scale {
+        0% {
+            transform: scale(1);
+        }
+
+        100% {
+            transform: scale(1.2);
+        }
+    }
 </style>
 
