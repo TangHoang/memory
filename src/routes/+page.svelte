@@ -4,7 +4,6 @@
     import Header from "../components/Header.svelte"
     import Cards from "../components/Cards.svelte";
     import Questions from "../components/Questions.svelte";
-  import anime from "animejs";
 
     const State = {
         start: "start",
@@ -27,7 +26,7 @@
     let grid;
     let selection = "smileys";
     let state = State.start;
-    let size = 36;
+    let size = 16;
     let chosenQuestions = chooseQuestions();
     let points = 0;
     let submittedAnswer = null;
@@ -38,7 +37,6 @@
     let timerId = null;
     let time = 120;
     let memoryTime = 0;
-    let isClicked = false;
 
     function chooseQuestions() {
         let temp = []; 
@@ -61,14 +59,11 @@
     }
 
     function createGrid() {
-        // !!! grid layout anpassen an array größe !!! //
-        return emoji[selection].sort(
-            () => Math.random() - 0.5).slice(0, Math.min(Math.floor(emoji[selection].length / 2) * 2, size)); // making sure that the array length is even
+        let randomizedCards = emoji[selection].sort(
+            () => Math.random() - 0.5).slice(0, size/2); // making sure that the array length is even
+        return [...randomizedCards, ...randomizedCards].sort(() => Math.random()-0.5);
     }
 
-    function shuffle(array) {
-        
-    }
 
     function gameWon() {
         state = State.won;
@@ -165,7 +160,7 @@
 
 {#if state === State.playingMemory}
     <Header {points} {time}> </Header>
-    <Cards {grid} {selected} {matches} matchCards= {matchCards}></Cards>
+    <Cards {grid} {selected} {matches} {size} matchCards= {matchCards}></Cards>
 {/if}
 
 {#if state === State.playingMath}

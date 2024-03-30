@@ -1,8 +1,11 @@
 <script>
-    export let selected;
-    export let matches, grid, matchCards
-    let displaySelected = [];
+  import { afterUpdate, onMount } from "svelte";
 
+    export let selected;
+    export let matches, grid, matchCards, size
+
+    let displaySelected = [];
+    
     function selectCard(cardIndex) {
         // Index, da emoji ein array ist -- siehe matchCards()
         selected = selected.concat(cardIndex);
@@ -13,7 +16,14 @@
             }, 1000);
         }
     }
-    
+
+    onMount(() => {
+        const cardsGrid = document.querySelector(".cards");
+        const gridTemplateRows = `repeat(${Math.sqrt(size)}, 1fr) / repeat(${Math.sqrt(size)}, 1fr)`;
+        cardsGrid.style.grid = gridTemplateRows;
+    })
+
+
     $: selected.length === 2 && matchCards(selected);
 
 </script>
@@ -50,7 +60,7 @@
     .card {
         height: auto;
         width: auto;
-        font-size: 3rem;
+        font-size: 4rem;
         background-color: var(--bg-2);
         transition: rotate 0.3s ease-out;
         transform-style: preserve-3d;
