@@ -22,12 +22,11 @@
         sports: false,
         animals: false,
     }
-
+    let numberOfQuestions = 5;
     let grid;
     let selection = "smileys";
     let state = State.start;
     let size = 16;
-    let chosenQuestions = chooseQuestions();
     let points = 0;
     let submittedAnswer = null;
     let booleanArray = [] // used to keep track of correct or false answers
@@ -38,12 +37,11 @@
     let time = 120;
     let memoryTime = 0;
 
+    let chosenQuestions = chooseQuestions();
+
     function chooseQuestions() {
-        let temp = []; 
-        for(let i=1; i<4; i++) {
-            temp.push(questions[Math.floor(Math.random() * questions.length)]);
-        }
-        return temp;
+        return questions.sort(() => Math.random() - 0.5).slice(0, numberOfQuestions);
+      
     }
 
     function startGameTimer() {
@@ -135,7 +133,7 @@
     $: maxMatches === matches.length && gameWon();
     $: time === 0 && gameLost();
     $: booleanArray.length === 3 && playMemory();
-    $: memoryTime % 30 === 29 && playMath()
+    $: memoryTime % 30 === 10 && playMath()
     $: console.log(state, selected, matches);
     $: if (state === State.playingMemory) {
         if(timerId === null) startGameTimer();
